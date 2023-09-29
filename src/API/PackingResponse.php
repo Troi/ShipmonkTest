@@ -13,6 +13,13 @@ class PackingResponse
 
     public static function deserialize(array $responseData): self
     {
+        if (!isset($responseData['bins_packed'])
+            || !isset($responseData['not_packed_items'])
+            || !isset($responseData['status'])
+            || !isset($responseData['errors'])
+        ) {
+            throw new \InvalidArgumentException('There are missing response parts');
+        }
         return new self(
             $responseData['bins_packed'],
             $responseData['not_packed_items'],

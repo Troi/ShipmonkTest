@@ -55,7 +55,16 @@ class BinPackageAPI
             return null;
         }
         $responseData = json_decode($response->getBody()->getContents(), true);
-        $responseObject = PackingResponse::deserialize($responseData['response']);
+        if ($responseData === null || $responseData === false || !empty($responseData['response'])) {
+            // TODO: log error
+            return null;
+        }
+        try {
+            $responseObject = PackingResponse::deserialize($responseData['response']);
+        } catch (\InvalidArgumentException $exception) {
+            // TODO: logg error
+            return null;
+        }
 
         if ($responseObject->criticalError) {
             throw new NoSuitableBoxException("There is critical error in response");
