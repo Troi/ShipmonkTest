@@ -9,7 +9,8 @@ use GuzzleHttp\Psr7\Uri;
 /** @var EntityManager $entityManager */
 $entityManager = require __DIR__ . '/src/bootstrap.php';
 $validator = \Symfony\Component\Validator\Validation::createValidator();
-$packagingService = new \App\Service\PackagingService($entityManager);
+$binAPI = new \App\API\BinPackageAPI(new \GuzzleHttp\Client([]), [], $validator);
+$packagingService = new \App\Service\RemotePackagingService($entityManager, $binAPI);
 $packagingGuesserService = new \App\Service\PackagingGuesserService($entityManager);
 $boxingService = new \App\Service\BoxingService($packagingService, $packagingGuesserService);
 

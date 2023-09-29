@@ -5,6 +5,7 @@ namespace App\Service;
 use App\CLI\Box;
 use App\CLI\ProductList;
 use App\Exception\NoSuitableBoxException;
+use App\Exception\WronglyPreparedAPICallException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -16,9 +17,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 class BoxingService
 {
     public function __construct(
-        private readonly PackagingService $packagingService,
+        private readonly RemotePackagingService  $packagingService,
         private readonly PackagingGuesserService $packagingGuesserService,
-        private readonly ?CacheInterface $packageCache = null,
+        private readonly ?CacheInterface         $packageCache = null,
     )
     {
     }
@@ -47,7 +48,12 @@ class BoxingService
      */
     private function findBox(ProductList $productList): Box
     {
-        $package = $this->packagingService->getPackage($productList);
+        try {
+            $package = $this->packagingService->getPackage($productList);
+        } catch (WronglyPreparedAPICallException $e) {
+            // TODO: log error and guess instead
+            $package = null;
+        }
         if (!$package) {
             $package = $this->packagingGuesserService->getPackage($productList);
         }
