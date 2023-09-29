@@ -19,7 +19,11 @@ class Application
 
     public function run(RequestInterface $request): ResponseInterface
     {
-        // your implementation entrypoint
+        // TODO: deserialize input into ProductList
+        // TODO: validate input data, use symfony validator
+        // TODO: normalize input data, reorder sizes by size
+        // TODO: call PackagingService
+        // TODO: serialize response
         return new Response();
     }
 
