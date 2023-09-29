@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\CLI\Box;
 use App\CLI\ProductList;
-use App\Exception\NoSuitablePackageException;
+use App\Exception\NoSuitableBoxException;
 
 /**
  * Get box for products
@@ -22,11 +22,19 @@ class BoxingService
 
     /**
      * @param ProductList $productList
-     * @throws NoSuitablePackageException
      * @return Box
+     * @throws NoSuitableBoxException
      */
     public function getBox(ProductList $productList): Box
     {
-        throw new NoSuitablePackageException();
+        $package = $this->packagingService->getPackage($productList);
+        if (!$package) {
+            $package = $this->packagingGuesserService->getPackage($productList);
+        }
+        if (!$package) {
+            throw new NoSuitableBoxException();
+        }
+
+        return Box::createFromPackage($package);
     }
 }

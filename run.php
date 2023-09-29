@@ -8,10 +8,13 @@ use GuzzleHttp\Psr7\Uri;
 
 /** @var EntityManager $entityManager */
 $entityManager = require __DIR__ . '/src/bootstrap.php';
+$packagingService = new \App\Service\PackagingService($entityManager);
+$packagingGuesserService = new \App\Service\PackagingGuesserService();
+$boxingService = new \App\Service\BoxingService($packagingService, $packagingGuesserService);
 
 $request = new Request('POST', new Uri('http://localhost/pack'), ['Content-Type' => 'application/json'], $argv[1]);
 
-$application = new Application($entityManager);
+$application = new Application($boxingService);
 $response = $application->run($request);
 
 echo "<<< In:\n" . Message::toString($request) . "\n\n";

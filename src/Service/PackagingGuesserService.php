@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\CLI\ProductList;
 use App\Entity\Packaging;
-use App\Exception\NoSuitablePackageException;
+use App\Exception\NoSuitableBoxException;
 
 /**
  * Guess most suitable package without external API help
@@ -19,5 +19,6 @@ class PackagingGuesserService
      */
     public function getPackage(ProductList $productList): ?Packaging
     {
+        return null;
     }
 }
