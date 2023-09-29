@@ -13,7 +13,7 @@ $remoteApiConfiguration = [
     'username' => 'web@jurasek.email',
     'apiKey' => '66bff80a7c1aa77adabe21614ee6edc8',
 ];
-$validator = \Symfony\Component\Validator\Validation::createValidator();
+$validator = \Symfony\Component\Validator\Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
 $binAPI = new \App\API\BinPackageAPI(new \GuzzleHttp\Client([]), $remoteApiConfiguration, $validator);
 $packagingService = new \App\Service\RemotePackagingService($entityManager, $binAPI);
 $packagingGuesserService = new \App\Service\PackagingGuesserService($entityManager);

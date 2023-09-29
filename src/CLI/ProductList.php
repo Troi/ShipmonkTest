@@ -9,9 +9,7 @@ class ProductList
 {
     /** @var array<int, Product> */
     #[Assert\Count(min: 1, minMessage: "You must pack at least one product")]
-    #[Assert\All([
-        new Assert\Valid()
-    ])]
+    #[Assert\Valid]
     public array $products = [];
 
     public function getCacheKey(): string
