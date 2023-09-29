@@ -56,11 +56,13 @@ class BinPackageAPI
         }
         $responseData = json_decode($response->getBody()->getContents(), true);
 
-        /* TODO: use after fix request
-        if (isset($responseData['response']['errors']) && count($responseData['response']['errors']) > 0) {
-            throw new NoSuitableBoxException("There are some errors in response"); // extract errors
+        if (isset($responseData['response']['status']) && $responseData['response']['status'] == 0) {
+            throw new NoSuitableBoxException("There is critical error in response"); // extract errors
         }
-        */
+        if (isset($responseData['response']['errors']) && count($responseData['response']['errors']) > 0) {
+            $texts = array_map(fn (array $error) => $error['message'], $responseData['response']['errors']);
+            throw new NoSuitableBoxException("There are some errors in response: ".implode("\n", $texts));
+        }
         $ids = [3]; // TODO: extract ids from response
 
         if (count($ids) != 1) {
