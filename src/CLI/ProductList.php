@@ -31,14 +31,13 @@ class ProductList
 
         $list = new ProductList();
 
-        foreach ($deserializedData as $productData) {
-            // FIXME: deserialize in right way
+        foreach ($deserializedData['products'] as $productData) {
             $product = new Product();
-            $product->id = $productData['id'] ?? 0;
-            $product->width = $productData['width'] ?? 0;
-            $product->height = $productData['height'] ?? 0;
-            $product->weight = $productData['weight'] ?? 0;
-            $product->length = $productData['length'] ?? 0;
+            $product->id = $productData['id'] ?? -1;
+            $product->width = $productData['width'] ?? -1;
+            $product->height = $productData['height'] ?? -1;
+            $product->weight = $productData['weight'] ?? -1;
+            $product->length = $productData['length'] ?? -1;
             $list->products[] = $product;
         }
 
