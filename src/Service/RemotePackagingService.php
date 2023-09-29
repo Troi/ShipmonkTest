@@ -19,7 +19,6 @@ class RemotePackagingService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly BinPackageAPI          $packageRequestAPI,
-        private array                           $binPackageConfigureation = []
     )
     {
     }
@@ -32,8 +31,6 @@ class RemotePackagingService
     {
         $packagingRepository = $this->entityManager->getRepository(Packaging::class);
         $requestBuilder = new RequestDataBuilder();
-        // TODO: copy information from configuration to builder
-        $requestBuilder->setAuth('asdf', 'qwer');
 
         foreach ($packagingRepository->findAll() as $package) {
             $requestBuilder->addBox($package);
@@ -48,7 +45,12 @@ class RemotePackagingService
 
             return $packagingRepository->find($id);
         } catch (WronglyPreparedAPICallException $e) {
-            // TODO: log error
+            // TODO: log error and continue
+            var_dump($e->getMessage()); die;
+            return null;
+        } catch (NoSuitableBoxException $e) {
+            // TODO: log error and continue
+            var_dump($e->getMessage()); die;
             return null;
         }
     }

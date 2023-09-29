@@ -35,7 +35,6 @@ class Application
         } catch (NoSuitableBoxException $noSuitableBoxException) {
             return new Response(400, [], 'These products can\'t be packed.');
         }
-        // TODO: serialize response
         return new Response(200,  [], json_encode($box));
     }
 

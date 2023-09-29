@@ -8,8 +8,13 @@ use GuzzleHttp\Psr7\Uri;
 
 /** @var EntityManager $entityManager */
 $entityManager = require __DIR__ . '/src/bootstrap.php';
+$remoteApiConfiguration = [
+    'url' => 'https://eu.api.3dbinpacking.com/packer/packIntoMany',
+    'username' => 'web@jurasek.email',
+    'apiKey' => '66bff80a7c1aa77adabe21614ee6edc8',
+];
 $validator = \Symfony\Component\Validator\Validation::createValidator();
-$binAPI = new \App\API\BinPackageAPI(new \GuzzleHttp\Client([]), [], $validator);
+$binAPI = new \App\API\BinPackageAPI(new \GuzzleHttp\Client([]), $remoteApiConfiguration, $validator);
 $packagingService = new \App\Service\RemotePackagingService($entityManager, $binAPI);
 $packagingGuesserService = new \App\Service\PackagingGuesserService($entityManager);
 $boxingService = new \App\Service\BoxingService($packagingService, $packagingGuesserService);
