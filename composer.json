@@ -10,7 +10,8 @@
         "doctrine/orm": "2.*",
         "doctrine/cache": "2.*",
         "doctrine/annotations": "1.*",
-        "symfony/cache": "^6.2"
+        "symfony/cache": "^6.2",
+        "symfony/validator": "^6.3"
     },
     "autoload": {
         "psr-4": {

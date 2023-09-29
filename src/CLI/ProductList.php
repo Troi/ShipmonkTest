@@ -1,10 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace App\CLI;
+
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductList
 {
     /** @var array<int, Product> */
+    #[Assert\Count(min: 1, minMessage: "You must pack at least one product")]
+    #[Assert\All([
+        new Assert\Valid()
+    ])]
     public array $products = [];
 
     public function getCacheKey(): string
@@ -19,6 +26,10 @@ class ProductList
     public static function deserialize(string $data): ProductList
     {
         $deserializedData = json_decode($data, true);
+
+        if ($deserializedData === null) {
+            throw new \InvalidArgumentException('Invalid json input format');
+        }
 
         $list = new ProductList();
 
