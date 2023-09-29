@@ -12,6 +12,11 @@ class ProductList
     #[Assert\Valid]
     public array $products = [];
 
+    public function __construct(array $products)
+    {
+        $this->products = $products;
+    }
+
     public function getCacheKey(): string
     {
         $productIds = array_map(
@@ -29,16 +34,16 @@ class ProductList
             throw new \InvalidArgumentException('Invalid json input format');
         }
 
-        $list = new ProductList();
+        $list = new ProductList([]);
 
         foreach ($deserializedData['products'] as $productData) {
-            $product = new Product();
-            $product->id = $productData['id'] ?? -1;
-            $product->width = $productData['width'] ?? -1;
-            $product->height = $productData['height'] ?? -1;
-            $product->weight = $productData['weight'] ?? -1;
-            $product->length = $productData['length'] ?? -1;
-            $list->products[] = $product;
+            $list->products[] = new Product(
+                $productData['id'] ?? -1,
+            $productData['width'] ?? -1,
+            $productData['height'] ?? -1,
+            $productData['weight'] ?? -1,
+            $productData['length'] ?? -1,
+            );
         }
 
         return $list;
@@ -46,8 +51,21 @@ class ProductList
 
     public static function normalize(ProductList $productList): ProductList
     {
-        // TODO: sort products
-        // TODO: sort dimensions of product
-        return $productList;
+        $normalizedProducts = [];
+
+        foreach ($productList->products as $product) {
+            $rawDimensions = [$product->length, $product->height, $product->width];
+            rsort($rawDimensions);
+            $normalizedProducts[] = new Product(
+                $product->id,
+                $rawDimensions[0],
+                $rawDimensions[1],
+                $rawDimensions[2],
+                $product->weight,
+            );
+        }
+
+        usort($normalizedProducts, fn(Product $p1, Product $p2) => $p1->width <=> $p2->width);
+        return new ProductList($normalizedProducts);
     }
 }

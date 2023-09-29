@@ -7,14 +7,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Product
 {
-    #[Assert\GreaterThan(0)]
-    public int $id;
-    #[Assert\GreaterThan(0)]
-    public float $width = 0;
-    #[Assert\GreaterThan(0)]
-    public float $height = 0;
-    #[Assert\GreaterThan(0)]
-    public float $length = 0;
-    #[Assert\GreaterThan(0)]
-    public float $weight = 0;
+    public function __construct(
+        #[Assert\GreaterThan(0)]
+        public readonly int $id,
+        #[Assert\GreaterThan(0)]
+        public readonly float $width,
+        #[Assert\GreaterThan(0)]
+        public readonly float $height,
+        #[Assert\GreaterThan(0)]
+        public readonly float $length,
+        #[Assert\GreaterThan(0)]
+        public readonly float $weight
+    ){}
+
 }
