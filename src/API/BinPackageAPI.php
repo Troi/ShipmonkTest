@@ -55,15 +55,15 @@ class BinPackageAPI
             return null;
         }
         $responseData = json_decode($response->getBody()->getContents(), true);
+        $responseObject = PackingResponse::deserialize($responseData['response']);
 
-        if (isset($responseData['response']['status']) && $responseData['response']['status'] == 0) {
-            throw new NoSuitableBoxException("There is critical error in response"); // extract errors
+        if ($responseObject->criticalError) {
+            throw new NoSuitableBoxException("There is critical error in response");
         }
-        if (isset($responseData['response']['errors']) && count($responseData['response']['errors']) > 0) {
-            $texts = array_map(fn (array $error) => $error['message'], $responseData['response']['errors']);
-            throw new NoSuitableBoxException("There are some errors in response: ".implode("\n", $texts));
+        if (count($responseObject->errors) > 0) {
+            throw new NoSuitableBoxException("There are some errors in response: ".implode("\n", $responseObject->getErrorTexts()));
         }
-        $ids = [3]; // TODO: extract ids from response
+        $ids = $responseObject->getProductIds();
 
         if (count($ids) != 1) {
             throw new NoSuitableBoxException('There is too many or no boxes to send');
