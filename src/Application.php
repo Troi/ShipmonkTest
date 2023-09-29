@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\CLI\NormalizerService;
 use App\CLI\ProductList;
+use App\CLI\ProductListUtils;
 use App\Exception\NoSuitableBoxException;
 use App\Service\BoxingService;
 use Doctrine\ORM\EntityManager;
@@ -13,20 +15,17 @@ use Psr\Http\Message\ResponseInterface;
 class Application
 {
     public function __construct(
-        private readonly BoxingService $boxingService
+        private readonly BoxingService $boxingService,
     )
     {
     }
 
     public function run(RequestInterface $request): ResponseInterface
     {
-        // TODO: deserialize input into ProductList
-        $productList = new ProductList();
-        // TODO: validate input data, use symfony validator
-        // TODO: normalize input data, reorder sizes by size
-        // TODO: call BoxingService
+        $productList = ProductList::deserialize($request->getBody()->getContents());
+        $normalizedProductList = ProductList::normalize($productList);
         try {
-            $box = $this->boxingService->getBox($productList);
+            $box = $this->boxingService->getBox($normalizedProductList);
         } catch (NoSuitableBoxException $noSuitableBoxException) {
             return new Response(400, [], 'These products can\'t be packed.');
         }
