@@ -5,7 +5,6 @@ namespace App\Service;
 
 use App\CLI\ProductList;
 use App\Entity\Packaging;
-use App\Exception\NoSuitableBoxException;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**

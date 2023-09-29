@@ -7,6 +7,15 @@ class ProductList
     /** @var array<int, Product> */
     public array $products = [];
 
+    public function getCacheKey(): string
+    {
+        $productIds = array_map(
+            fn(Product $product) => $product->id, $this->products
+        );
+        rsort($productIds);
+        return implode('_', $productIds);
+    }
+
     public static function deserialize(string $data): ProductList
     {
         $deserializedData = json_decode($data, true);
